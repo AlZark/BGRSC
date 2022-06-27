@@ -31,7 +31,6 @@
                 </table>
             </div>
         </div>
-
     </div>
     <div class="container">
         <div class="row justify-content-center">
@@ -54,6 +53,9 @@
                     </tbody>
                 </table>
             </div>
+            <a class="btn btn-primary float-end" href="{{route('message')}}">
+                Read more
+            </a>
         </div>
     </div>
 @endsection

@@ -55,17 +55,17 @@ class StatisticController extends Controller
         } else {
             $data['data'] = Statistic::select('animal_id', 'type_id', 'report_date', DB::raw('SUM(amount) as amount'))
                 ->where(function ($query) {
-                    if($fromDate = request('from_date')) {
+                    if ($fromDate = request('from_date')) {
                         $query->where('report_date', '>=', $fromDate);
                     }
                 })
                 ->where(function ($query) {
-                    if($toDate = request('to_date')) {
+                    if ($toDate = request('to_date')) {
                         $query->where('report_date', '<=', $toDate);
                     }
                 })
                 ->where(function ($query) {
-                    if($animalId = request('animal')) {
+                    if ($animalId = request('animal')) {
                         $query->where('animal_id', $animalId);
                     }
                 })
@@ -77,7 +77,7 @@ class StatisticController extends Controller
         $animal = null;
         $report_date = null;
         $index = 0;
-        if(count($data['data']) != 0) {
+        if (count($data['data']) != 0) {
             foreach ($data['data'] as $report) {
                 if ($animal != $report->animal->title || $report_date != $report['report_date']) {
                     $index++;
@@ -110,17 +110,17 @@ class StatisticController extends Controller
         } else {
             $data['statistics'] = Statistic::select('animal_id', 'type_id', DB::raw('SUM(amount) as sum'))
                 ->where(function ($query) {
-                    if($fromDate = request('from_date')) {
+                    if ($fromDate = request('from_date')) {
                         $query->where('report_date', '>=', $fromDate);
                     }
                 })
                 ->where(function ($query) {
-                    if($toDate = request('to_date')) {
+                    if ($toDate = request('to_date')) {
                         $query->where('report_date', '<=', $toDate);
                     }
                 })
                 ->where(function ($query) {
-                    if($animal = request('animal')) {
+                    if ($animal = request('animal')) {
                         $query->where('animal_id', $animal);
                     }
                 })
@@ -130,7 +130,6 @@ class StatisticController extends Controller
 
         return $data['statistics'];
     }
-
 
 
     /**
@@ -148,14 +147,14 @@ class StatisticController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $typeCount = StatisticType::count();
 
-        for($i = 1; $i <= $typeCount; $i++) {
+        for ($i = 1; $i <= $typeCount; $i++) {
             $statistic = new Statistic();
             $statistic->report_date = $request->post('report_date');
             $statistic->user_id = Auth::id();
@@ -170,7 +169,7 @@ class StatisticController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -181,7 +180,7 @@ class StatisticController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -192,8 +191,8 @@ class StatisticController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -204,11 +203,21 @@ class StatisticController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
+    }
+
+    public static function checkIfCreated()
+    {
+        $date = date('Y-m');
+        $created = Statistic::where('user_id', 1)->where('report_date', $date)->first();
+        if ($created == null) {
+            return false;
+        }
+        return true;
     }
 }
